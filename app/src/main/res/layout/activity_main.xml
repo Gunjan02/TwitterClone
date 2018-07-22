@@ -20,25 +20,16 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/logBtn"
-        android:layout_width="164dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="65dp"
-        android:layout_marginStart="95dp"
-        android:background="@android:color/background_light"
-        android:text="Log in" />
-
-    <Button
         android:id="@+id/signupBtn"
         android:layout_width="164dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/logBtn"
+        android:layout_alignParentStart="true"
         android:layout_marginBottom="175dp"
+        android:layout_marginStart="95dp"
         android:background="#cdecf7"
-        android:text="sign up" />
+        android:onClick="click"
+        android:text="register" />
 
     <EditText
         android:id="@+id/username"
@@ -62,14 +53,14 @@
         android:hint="Enter Password"
         android:inputType="textPassword" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <Button
+        android:id="@+id/lBtn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/logBtn"
-        android:layout_marginBottom="124dp"
-        android:text="Already have an account?"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="46dp"
+        android:layout_marginEnd="86dp"
+        android:text="login" />
+
 </RelativeLayout>

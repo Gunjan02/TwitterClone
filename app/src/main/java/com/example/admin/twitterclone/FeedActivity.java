@@ -25,18 +25,16 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeedActivity extends ListActivity {
 
 
     FeedAdapter arrayAdapter;
 
-    String user;
-
-
-    Button logout;
-    ArrayList<PersonsList> users;
+    ArrayList<PersonsList> tweetdata;
 
     ListView userList2;
 
@@ -45,26 +43,11 @@ public class FeedActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        String user = currentUser.getUsername().toString();
 
-        logout = (Button) findViewById(R.id.logoutBtn);
-
-
-
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ParseUser.logOut();
-                finish();
-            }
-        });
-
-
-        users = new ArrayList<>();
-        arrayAdapter = new FeedAdapter(this, R.layout.feed_layout, users);
         userList2 = (ListView) findViewById(R.id.lv2);
+        tweetdata = new ArrayList<>();
+        arrayAdapter = new FeedAdapter(this,android.R.layout.simple_list_item_1, tweetdata);
+
 
         getList();
 
@@ -78,28 +61,28 @@ public class FeedActivity extends ListActivity {
 
 
     private void getList() {
-        userList2= (ListView) findViewById(R.id.lv2);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Tweets");
 
-        query.whereEqualTo("user",user ); //assume you have a DonAcc column in your Country table
+        query.whereContainedIn("user",ParseUser.getCurrentUser().getList("isFollowing") ); //assume you have a DonAcc column in your Country table
         query.orderByDescending("createdAt"); //Parse has a built createAt
+        query.setLimit(20);
         query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> nameList, ParseException e) {
-                if (e == null) {
-                     users = new ArrayList<>();
+            @Override
+            public void done(List<ParseObject> tweetObjects, ParseException e) {
+               if(e == null){
+                   if(tweetObjects.size() > 0){
+                       for(ParseObject tweetObject : tweetObjects){
+                           PersonsList tweet = new PersonsList(tweetObject.getString("user"),tweetObject.getString("newMsg"));
 
-                    for (ParseObject object: nameList) {
-                        String name = object.getString("user"); //assume you have a name column in your Country table
-                        String msg = object.getString("newMsg");
-                        users.add(new PersonsList(name,msg));
-                    }
-                    arrayAdapter = new FeedAdapter(FeedActivity.this,
-                            R.layout.feed_layout, users);
-                    userList2.setAdapter(arrayAdapter);
-                } else {
-                    Log.d("error", "Error: " + e.getMessage());
-                }
+                           tweetdata.add(tweet);
+
+                       }
+                       userList2.setAdapter(arrayAdapter);
+                   }
+               }else {
+                   Log.d("error","Error"+e.getMessage());
+               }
             }
         });
     }

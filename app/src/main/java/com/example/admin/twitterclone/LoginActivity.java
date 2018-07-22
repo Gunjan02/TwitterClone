@@ -39,33 +39,34 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = getIntent();
         u = i.getStringExtra("USERNAME");
         p = i.getStringExtra("PASSWORD");
-    }
-    public void click(View view)
-    {
-        ParseUser.logInInBackground(username.getText().toString(),password.getText().toString(), new LogInCallback() {
+
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                if (username.getText().toString().equals(u) && password.getText().toString().equals(p)) {
-                    alertDisplayer("Sucessful Login","Welcome back " + username.getText().toString().toUpperCase() + " !");
+            public void onClick(View view) {
+                ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
 
-                } else {
-                    Toast.makeText(LoginActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void done(ParseUser parseUser, ParseException e) {
+                        if (parseUser != null) {
 
-                }
+                            alertDisplayer("Sucessful Login", "Welcome back " +
+                                    username.getText().toString() + "!");
+
+
+                        } else {
+                            ParseUser.logOut();
+                            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
-
-
-
-
     }
 
-    private void alertDisplayer(String sucessful_login, String s) {
-
+    private void alertDisplayer(String title,String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
-                .setTitle(sucessful_login)
-                .setIcon(R.drawable.bird)
-                .setMessage(s)
+                .setTitle(title)
+                .setMessage(message)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -81,4 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
+
+
+
 

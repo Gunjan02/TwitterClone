@@ -1,23 +1,15 @@
 package com.example.admin.twitterclone;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +19,6 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import com.parse.Parse;
-
-import com.parse.ParseObject;
-
-import com.parse.ParseInstallation;
-import com.parse.SignUpCallback;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +26,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView name;
     Button logout,profile;
     ArrayList<PersonsList> usernames;
-    ArrayAdapter arrayAdapter;
+    ListAdapter arrayAdapter;
     ListView userList;
 
     @Override
@@ -66,8 +52,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         usernames = new ArrayList<>();
-        arrayAdapter = new ArrayAdapter<PersonsList>(this, android.R.layout.simple_list_item_1, usernames);
-         userList = (ListView) findViewById(R.id.listview);
+        arrayAdapter = new ListAdapter(this, R.layout.userslist, usernames);
+         userList = (ListView) findViewById(R.id.lv2);
 
         if(ParseUser.getCurrentUser().get("isFollowing")==null){
             List<String> emptyList=new ArrayList<>();
@@ -97,6 +83,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case R.id.feedButton :
                 Toast.makeText(this, "Your Feed is ready", Toast.LENGTH_SHORT).show();
+                Intent feed=new Intent(HomeActivity.this,FeedActivity.class);
+                startActivity(feed);
                 return true;
         }
 
@@ -104,7 +92,13 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void tweetMessage(){
-        Toast.makeText(this, "Tweet Here!!!", Toast.LENGTH_SHORT).show();
+
+                // don't forget to change the line below with the names of your Activities
+                Intent intent = new Intent(HomeActivity.this, TweetActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+
     }
     private void getList() {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -119,7 +113,7 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (objects.size() > 0) {
 
                         for (ParseUser user : objects) {
-                            usernames.add(new PersonsList(user.getUsername(),R.drawable.notfollowing));
+                            usernames.add(new PersonsList(user.getUsername(),R.drawable.tick1));
                         }
 
                         arrayAdapter.notifyDataSetChanged();
@@ -140,8 +134,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        CheckedTextView checkedTextView=(CheckedTextView)view;
-        if(checkedTextView.isChecked()){
+        ImageButton checkedTextView=(ImageButton) view;
+        if(checkedTextView.isEnabled()){
             ParseUser.getCurrentUser().getList("isFollowing").add(usernames.get(i));
             ParseUser.getCurrentUser().saveInBackground();
         }else{

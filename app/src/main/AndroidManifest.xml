@@ -26,9 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity"
+            android:theme="@style/Theme.AppCompat.Light"></activity>
         <activity android:name=".TweetActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".FeedActivity"></activity>
 
         <meta-data
             android:name="com.parse.APPLICATION_ID"
